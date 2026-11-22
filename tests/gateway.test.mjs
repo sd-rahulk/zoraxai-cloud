@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { test } from "node:test";
+import pg from "pg";
 import { passwordHash, verifyPassword } from "../lib/server/config.mjs";
 import { makePool } from "../lib/server/db.mjs";
 import { containsSecret } from "../lib/server/knowledge.mjs";
@@ -10,6 +11,18 @@ import { dispatch } from "../lib/server/api.mjs";
 
 test("rejects a Supabase HTTPS project URL before connecting", () => {
   assert.throws(() => makePool("https://demo.supabase.co"), { code:"invalid_database_url" });
+});
+
+test("uses the Supabase CA with verified TLS even when the URL sets sslmode", async () => {
+  const pool = makePool("postgresql://postgres@aws-0-example.pooler.supabase.com/postgres?sslmode=require", true);
+  try {
+    const client = new pg.Client(pool.options);
+    assert.equal(client.ssl.rejectUnauthorized, true);
+    assert.match(client.ssl.ca, /-----BEGIN CERTIFICATE-----/);
+    assert.equal(client.ssl.checkServerIdentity, undefined);
+  } finally {
+    await pool.end();
+  }
 });
 
 test("accepts the previous scrypt hashes and new Node-generated hashes", async () => {
