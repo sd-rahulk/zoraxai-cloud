@@ -1,0 +1,20 @@
+{
+  "passed": 12,
+  "checks": [
+    "Fills ordinary choices, advances one step and fills contact before handing off",
+    "Unassociated veteran question remains manual while contact is filled",
+    "Consent stays manual and blocks navigation after ordinary contacts fill",
+    "Submit-type Continue and final Send actions are never clicked by runner",
+    "No repeated Next clicks when the page fails to advance",
+    "Stop cancels the next navigation while retaining filled entries",
+    "Unknown required field pauses instead of fabricating an answer",
+    "Multiple visible Next controls pause for manual navigation",
+    "Consent-on-entry notice pauses before any field is filled",
+    "Generic footer notice does not stall an ordinary step",
+    "Mortgage goal prompt is left manual even without a linked field label",
+    "Popup tracks an asynchronous pause and restores it when reopened"
+  ],
+  "environment": "jsdom; layout visibility stubbed",
+  "externalSubmissions": 0,
+  "browserValidation": "Not performed in this environment"
+}

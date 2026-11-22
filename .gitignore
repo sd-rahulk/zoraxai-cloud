@@ -1,0 +1,17 @@
+.env
+.env.local
+.env.*
+!.env.example
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+*.log
+.qa/
+/frontend/
+/22.18.0
+/next-env.d.ts

@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Zorax Gateway</title>
+<h1>Zorax Gateway</h1>
+<form id="pair">
+  <label>Pairing code <input id="code" required autocomplete="off"></label>
+  <button>Pair browser</button>
+</form>
+<label>Knowledge profile <select id="profile"><option value="">Gateway default</option></select></label>
+<button id="run">Analyze example</button>
+<pre id="result" aria-live="polite"></pre>
+<script src="popup.js" defer></script>
+</html>

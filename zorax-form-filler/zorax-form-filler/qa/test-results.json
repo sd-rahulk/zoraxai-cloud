@@ -1,0 +1,21 @@
+{
+  "passed": 13,
+  "checks": [
+    "Native contacts, exact profile values, full name, confirmation and phone length",
+    "Country and state aliases, option availability, actual bedroom choices and radio groups",
+    "No fabricated contact details when the saved profile is missing a value",
+    "Sensitive answers, checkboxes, consent selects, security codes and search remain untouched",
+    "Preserve existing values by default; replacement requires explicit setting",
+    "Undo restores native fields and radio groups without a prior selection",
+    "Manual label mappings and exact dropdown option overrides",
+    "Input events update page-side model; open shadow DOM is filled",
+    "New dependent fields are recognised on a second fill click",
+    "ARIA combobox exact matching and custom radio choices",
+    "Sample choices off leaves unmatched ordinary controls alone",
+    "Embedded third-party domains are surfaced for optional, specific permissions",
+    "Popup profile creation, edit, persistence, toggles and actual scan/fill orchestration with mocked Chrome API"
+  ],
+  "environment": "jsdom local DOM integration tests; layout visibility stubbed",
+  "browserTests": "Blocked: Chromium requires Unix sockets unavailable under workspace permissions. No real-browser compatibility claim.",
+  "externalSubmissions": 0
+}

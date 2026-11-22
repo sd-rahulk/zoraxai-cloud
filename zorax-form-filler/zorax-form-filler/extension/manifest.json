@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Zorax Form Filler",
+  "version": "1.3.0",
+  "description": "Fill forms on demand with editable contact profiles. Review choices; never auto-submit.",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "optional_host_permissions": ["http://*/*", "https://*/*"],
+  "background": {"service_worker": "background.js"},
+  "action": {"default_title": "Zorax Form Filler", "default_popup": "popup.html"},
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {"default": "Alt+Shift+F"},
+      "description": "Open Zorax Form Filler"
+    }
+  }
+}

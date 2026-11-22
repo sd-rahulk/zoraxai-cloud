@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: zorax-ai-cloud
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: PUBLIC_ORIGIN
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+      - key: ZORAX_SECRET
+        sync: false
+      - key: KNOWLEDGE_ENCRYPTION_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+      - key: MAX_CLOUD_CONCURRENCY
+        value: "2"
+      - key: RETENTION_DAYS
+        value: "90"

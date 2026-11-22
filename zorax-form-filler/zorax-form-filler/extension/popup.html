@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zorax Form Filler</title><link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header><div class="mark">Z</div><div><strong>ZORAX</strong><span>Form Filler</span></div><span id="cloudMode" class="local">LOCAL ONLY</span></header>
+  <main>
+    <section class="intro"><h1>Your details. One click.</h1><p>Save a profile, fill the current step, then review it.</p></section>
+    <label class="label" for="profiles">CONTACT PROFILE</label>
+    <div class="profilebar"><select id="profiles" aria-label="Saved contact profile"></select><button id="newProfile" class="subtle" title="Create profile">+ New</button><button id="editProfile" class="subtle">Edit</button></div>
+    <form id="editor" hidden>
+      <div class="editor-title"><h2>Edit contact details</h2><button type="button" id="deleteProfile" class="text danger">Delete profile</button></div>
+      <label>Profile name<input name="profileName" required placeholder="e.g. US enquiry contact" maxlength="80"></label>
+      <div class="grid"><label>First name<input name="firstName" autocomplete="given-name"></label><label>Last name<input name="lastName" autocomplete="family-name"></label></div>
+      <label>Email<input name="email" type="email" autocomplete="email" placeholder="Your real inbox"></label>
+      <label>Phone<input name="phone" type="tel" autocomplete="tel" placeholder="Include country code, e.g. +1…"><small>Use a number you control. No number is invented.</small></label>
+      <details><summary>Optional contact details</summary>
+        <label>Company<input name="company"></label><label>Street address<input name="address"></label>
+        <div class="grid"><label>City<input name="city"></label><label>State / region<input name="state" placeholder="Full name or abbreviation"></label></div>
+        <div class="grid"><label>Postal / ZIP code<input name="postalCode"></label><label>Country<input name="country" placeholder="United States / India / …"></label></div>
+      </details>
+      <div class="editor-actions"><button type="button" id="cancelEdit" class="subtle">Cancel</button><button type="submit" class="primary">Save profile</button></div>
+    </form>
+    <details class="cloud-settings">
+      <summary>Zorax Cloud settings</summary>
+      <p class="hint">Send unanswered field labels, types, choices, and the site origin to your gateway. Local profile values stay in this browser.</p>
+      <form id="cloudConnect">
+        <label>Gateway address<input id="cloudOrigin" type="url" placeholder="https://your-gateway.onrender.com" required></label>
+        <label>Zorax API key or pairing code<input id="cloudCredential" type="password" autocomplete="off" maxlength="80" required></label>
+        <button id="cloudConnectButton" type="submit" class="subtle">Connect</button>
+      </form>
+      <div id="cloudProfiles" hidden>
+        <label>Knowledge profile<select id="cloudProfile"></select></label>
+        <div class="cloud-actions"><button id="cloudRefresh" type="button" class="subtle">Refresh profiles</button><button id="cloudDisconnect" type="button" class="text danger">Disconnect</button></div>
+      </div>
+      <p id="cloudStatus" class="hint" role="status"></p>
+    </details>
+    <section class="settings">
+      <label class="switch"><input id="sampleChoices" type="checkbox"><span><b>Pick sample choices</b><small>Select available ordinary choices such as bedrooms. Review before use.</small></span></label>
+      <label class="switch"><input id="overwrite" type="checkbox"><span><b>Replace existing entries</b><small>Off: preserve values already entered or selected.</small></span></label>
+    </section>
+    <div class="actions"><button id="scan" class="subtle">Review fields</button><button id="fill" class="primary">Fill this step <span>↗</span></button></div>
+    <div class="actions"><button id="assist" class="primary">Fill &amp; continue</button><button id="stopAssist" class="subtle">Stop auto-fill</button></div>
+    <p class="hint">Continues supported steps, then pauses for manual answers or before sending contact details. Existing answers are preserved.</p>
+    <p id="status" role="status" aria-live="polite"></p>
+    <section id="review" hidden><div class="review-heading"><h2>Fields on this step</h2><button id="undo" class="text">Undo last fill</button></div><p class="hint">Change a match or enter a value below. Then click Fill this step. New step? Open and fill again.</p><div id="fields"></div></section>
+    <section id="embedded" hidden><p>Some embedded forms use another domain. You can grant access to the detected domains only.</p><button id="allowFrames" class="subtle">Allow detected embedded forms</button><div id="frameDomains"></div></section>
+    <footer>Fill &amp; continue can use your connected knowledge profile. Consent, sensitive answers, verification and final actions stay manual.</footer>
+  </main>
+  <script src="cloud-config.js"></script>
+  <script src="field-lookup.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
