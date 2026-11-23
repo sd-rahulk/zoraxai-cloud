@@ -69,6 +69,22 @@ test("chooses the actual loan option using saved facts, equivalent wording and O
   assert.equal(conflicting.fill.length,0);
 });
 
+test("matches a generic goal question when its options identify mortgage products", () => {
+  const form = formSchema.parse({fields:[{
+    id:"goal",label:"What's your goal?",type:"radio",options:["Refinance","Buy a home","Use my equity"],
+  }]});
+  for (const [goal,expected] of [
+    ["Lower my monthly payment","Refinance"], ["Buy a home","Buy a home"], ["Use my equity","Use my equity"],
+  ]) {
+    const {result} = plan(form,{context:`Loan goal: ${goal}`});
+    assert.equal(result.fill[0]?.value,expected);
+  }
+  assert.equal(plan(form,{context:""}).result.fill.length,0);
+  assert.equal(plan(form,{context:"Loan goal: Lower my monthly payment\nLoan goal: Buy a home"}).result.fill.length,0);
+  const ordinary = formSchema.parse({fields:[{...form.fields[0],options:["Save time","Learn a skill"]}]});
+  assert.equal(plan(ordinary,{context:"Loan goal: Lower my monthly payment"}).result.fill.length,0);
+});
+
 test("tracks verified Groq usage without estimating available counts", () => {
   const row=groqUsage({model:"openai/gpt-oss-20b",choices:[{message:{content:'{"m":[]}'},finish_reason:"stop"}],
     usage:{prompt_tokens:42,completion_tokens:9,total_tokens:51,completion_tokens_details:{reasoning_tokens:2},

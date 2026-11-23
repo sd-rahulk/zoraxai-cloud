@@ -23,7 +23,7 @@
         /^why (?:are you (?:looking to )?|do you want to )(?:refinance|refinancing)(?: (?:your |the )?mortgage)?$/.test(words) ||
         /^what (?:is|s) (?:your |the )?(?:loan|mortgage|refinance|refinancing) (?:goal|purpose)$/.test(words)) return 'goal';
     if (/^(?:loan type|mortgage type|what type of (?:loan|mortgage) (?:are you looking for|do you want))$/.test(words)) return 'type';
-    if (/^(?:i want to|what (?:would you like|do you want) to do)$/.test(words) &&
+    if (/^(?:i want to|what (?:would you like|do you want) to do|(?:whats|what is) your (?:(?:main|primary) )?goal)$/.test(words) &&
         new Set(options.map(intent).filter(key=>['refinance','equity','purchase'].includes(key))).size>=2) return 'type';
     return '';
   }
