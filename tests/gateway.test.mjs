@@ -6,7 +6,7 @@ import pg from "pg";
 import { passwordHash, verifyPassword } from "../lib/server/config.mjs";
 import { makePool } from "../lib/server/db.mjs";
 import { containsSecret, parseProfile, schemas } from "../lib/server/knowledge.mjs";
-import { formSchema, groqUsage, plan } from "../lib/server/inference.mjs";
+import { formSchema, groqUsage, identifyNext, navigationSchema, plan } from "../lib/server/inference.mjs";
 import { dispatch } from "../lib/server/api.mjs";
 
 test("rejects a Supabase HTTPS project URL before connecting", () => {
@@ -92,6 +92,26 @@ test("matches a generic goal question when its options identify mortgage product
   assert.equal(plan(form,{context:"Loan goal: Lower my monthly payment\nLoan goal: Buy a home"}).result.fill.length,0);
   const ordinary = formSchema.parse({fields:[{...form.fields[0],options:["Save time","Learn a skill"]}]});
   assert.equal(plan(ordinary,{context:"Loan goal: Lower my monthly payment"}).result.fill.length,0);
+});
+
+test("meters navigation lookup and only returns an in-range control index", async () => {
+  const form=navigationSchema.parse({controls:[{label:"proceed",in_step:true}]});
+  const charges=[];
+  const db={
+    settings:async()=>({model:"openai/gpt-oss-20b",max_output:256,context_size:8192}),
+    begin:async (...args)=>{assert.deepEqual(args,["key","identify-next",1]);return "request";},
+    reserve:async (_id,_key,_model,amount)=>assert(amount>256),
+    finish:async (_id,record)=>charges.push(record.budget_charge),
+  };
+  for (const choice of [0,8,null]) {
+    const mock=async (_url,request)=>{
+      assert.deepEqual(JSON.parse(JSON.parse(request.body).messages[1].content),form.controls);
+      return Response.json({choices:[{finish_reason:"stop",message:{content:JSON.stringify({choice})}}],
+        usage:{prompt_tokens:88,completion_tokens:12,total_tokens:100}});
+    };
+    assert.deepEqual(await identifyNext(db,{groq:"mock"},form,"key",mock),{choice:choice===0?0:null});
+  }
+  assert.deepEqual(charges,[100,100,100]);
 });
 
 test("tracks verified Groq usage without estimating available counts", () => {
