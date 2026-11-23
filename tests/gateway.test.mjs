@@ -48,6 +48,27 @@ test("keeps exact knowledge local and excludes protected fields", () => {
   assert(containsSecret("4111 1111 1111 1111"));
 });
 
+test("chooses the actual loan option using saved facts, equivalent wording and Other", () => {
+  const field = (id,label,options) => ({id,label,type:"radio",options});
+  const form = formSchema.parse({fields:[
+    field("intro","I want to",["Home purchase","Refinance my mortgage","Home equity"]),
+    field("goal","Why are you refinancing?",["Take cash out","Reduce my monthly mortgage payment","Other"]),
+    field("other","Loan goal",["Take cash out","Switch to a fixed rate","Something else"]),
+    field("unknown","Loan purpose",["Take cash out","Switch to a fixed rate"]),
+    field("authorization","Credit authorization",["Yes","No"]),
+  ]});
+  const {result} = plan(form,{context:"I’m exploring loan options. My main goal is to lower my monthly mortgage payment."});
+  assert.deepEqual(result.fill.map(({field_id,value})=>[field_id,value]),[
+    ["intro","Refinance my mortgage"],["goal","Reduce my monthly mortgage payment"],["other","Something else"],
+  ]);
+  assert.equal(result.ask.find(row=>row.field_id==="unknown")?.field_id,"unknown");
+  assert.equal(result.requires_review.find(row=>row.field_id==="authorization")?.field_id,"authorization");
+  const blank = plan(form,{context:"I’m exploring options."}).result;
+  assert.equal(blank.fill.length,0);
+  const conflicting = plan(form,{context:"Loan goal: Lower my monthly payment\nLoan goal: Take cash out"}).result;
+  assert.equal(conflicting.fill.length,0);
+});
+
 test("tracks verified Groq usage without estimating available counts", () => {
   const row=groqUsage({model:"openai/gpt-oss-20b",choices:[{message:{content:'{"m":[]}'},finish_reason:"stop"}],
     usage:{prompt_tokens:42,completion_tokens:9,total_tokens:51,completion_tokens_details:{reasoning_tokens:2},

@@ -157,7 +157,7 @@ export function KnowledgeEditor({ record, onSaved, onDeleted }: {
           <label>Background and reusable information<textarea className="knowledge-context" rows={15} maxLength={12000} value={draft.context}
             onChange={e => setDraft({ ...draft, context: e.target.value })}
             placeholder={"Shipping region: Western Europe\n\nAdd company background or other reusable information here."} /></label>
-          <p className="muted">Use one fact per line for labeled facts, or write short paragraphs. {draft.context.length.toLocaleString()} / 12,000 characters.</p>
+          <p className="muted">Use one fact per line. For a loan enquiry, add your actual preference, for example “Loan goal: Lower my monthly payment”. Zorax can match equivalent choices and use Other when available. {draft.context.length.toLocaleString()} / 12,000 characters.</p>
         </div>}
         <details className="knowledge-access" onToggle={e => toggleAccess(e.currentTarget.open)}>
           <summary>Extension access · {keyIds.length} {keyIds.length === 1 ? "key" : "keys"}</summary>
