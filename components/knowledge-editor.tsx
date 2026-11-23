@@ -122,7 +122,7 @@ export function KnowledgeEditor({ record, onSaved, onDeleted }: {
         {tab === "Business Information" && <div className="form-grid">
           {businessFields.map(([key, label]) => <label key={key} className={key === "description" || key === "services" ? "knowledge-wide" : undefined}>{label}
             {key === "description" || key === "services"
-              ? <textarea rows={3} maxLength={512} value={draft.business[key] ?? ""} onChange={e => setDraft({ ...draft, business: { ...draft.business, [key]: e.target.value } })} />
+              ? <textarea rows={3} maxLength={key === "services" ? 512 : undefined} value={draft.business[key] ?? ""} onChange={e => setDraft({ ...draft, business: { ...draft.business, [key]: e.target.value } })} />
               : <input type={key === "email" ? "email" : key === "website" ? "url" : key === "phone" ? "tel" : "text"}
                 maxLength={512} value={draft.business[key] ?? ""} onChange={e => setDraft({ ...draft, business: { ...draft.business, [key]: e.target.value } })} />}
           </label>)}

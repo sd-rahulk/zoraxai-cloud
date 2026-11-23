@@ -5,7 +5,7 @@ import { test } from "node:test";
 import pg from "pg";
 import { passwordHash, verifyPassword } from "../lib/server/config.mjs";
 import { makePool } from "../lib/server/db.mjs";
-import { containsSecret } from "../lib/server/knowledge.mjs";
+import { containsSecret, parseProfile, schemas } from "../lib/server/knowledge.mjs";
 import { formSchema, groqUsage, plan } from "../lib/server/inference.mjs";
 import { dispatch } from "../lib/server/api.mjs";
 
@@ -67,6 +67,15 @@ test("chooses the actual loan option using saved facts, equivalent wording and O
   assert.equal(blank.fill.length,0);
   const conflicting = plan(form,{context:"Loan goal: Lower my monthly payment\nLoan goal: Take cash out"}).result;
   assert.equal(conflicting.fill.length,0);
+});
+
+test("preserves long business descriptions when creating, updating and importing profiles", () => {
+  const description = "We help small businesses respond to new inquiries.\n".repeat(70) + "Our service includes scheduling.";
+  const input = {name:"Demo",business:{description}};
+  assert.equal(schemas.create.parse(input).business.description,description);
+  assert.equal(schemas.update.parse({...input,version:1}).business.description,description);
+  assert.equal(parseProfile(schemas.import.parse({format_version:1,profile:input}).profile).business.description,description);
+  assert.throws(() => parseProfile({name:"Demo",business:{description:"a".repeat(57000)}}), {code:"The profile exceeds the maximum size."});
 });
 
 test("matches a generic goal question when its options identify mortgage products", () => {
